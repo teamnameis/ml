@@ -2,7 +2,7 @@
 import numpy as np
 import cv2 
 
-def overlay_kimono(src_point, dst_point):
+def overlay_kimono(src_image, dst_image, src_point, dst_point):
     t_point = src_point
     o_point = dst_point
     _t_points, _o_points = [], []
