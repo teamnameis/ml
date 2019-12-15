@@ -11,8 +11,8 @@ def overlay_kimono(src_image, dst_image, src_point, dst_point):
         _t_points.append(t[:2])
         _o_points.append(o[:2])
 
-    scaled_src_point = np.copy(_t_points)
-    scaled_dst_point = np.copy(_o_points)
+    scaled_src_point = np.array(_t_points)
+    scaled_dst_point = np.array(_o_points)
     scaled_src_point[:, 0] *= src_image.shape[1] 
     scaled_src_point[:, 1] *= src_image.shape[0]
     scaled_dst_point[:, 0] *= dst_image.shape[1] 
@@ -36,18 +36,17 @@ def overlay_kimono(src_image, dst_image, src_point, dst_point):
 
     new_size = (int(nx*kimono_margin_x), int(ny+(ymax - src_max[1]) * ratio[1]))
 
-    t_points = np.copy(_t_points)
-    o_points = np.copy(_o_points)
-    t_points -= np.mean(t_points, 0)
-    o_points -= np.mean(o_points, 0)
+    # t_points = np.copy(_t_points)
+    # o_points = np.copy(_o_points)
+    # t_points -= np.mean(t_points, 0)
+    # o_points -= np.mean(o_points, 0)
+    # U, S, Vt = np.linalg.svd(np.dot(t_points.T, o_points))
+    # R = (U * Vt).T
+    # R_ = [[R[0, 0], R[0, 1], 0],
+    #       [R[1, 0], R[1, 1], 0],
+    #       [      0,       0, 1]]
 
-    U, S, Vt = np.linalg.svd(np.dot(t_points.T, o_points))
-    R = (U * Vt).T
-    R_ = [[R[0, 0], R[0, 1], 0],
-          [R[1, 0], R[1, 1], 0],
-          [      0,       0, 1]]
-
-    theta = np.math.acos(R[0, 0])
+    # theta = np.math.acos(R[0, 0])
     
     reg = cv2.resize(src_image[src_min[1]:ymax, xmin:xmax], new_size)
     
@@ -55,7 +54,7 @@ def overlay_kimono(src_image, dst_image, src_point, dst_point):
     dx = max(int(dx+(1-kimono_margin_x)*nx/2), 0)
     dy = min(int(dy-(1-kimono_margin_y)*ny/2), np.max(w[0])-1)
 
-    tmpl = np.copy(dst_image)
+    tmpl = dst_image
     y, x = np.where(reg[:, :, 3] != 0)
     yind = np.clip(dy+y, 0, tmpl.shape[0]-1)
     xind = np.clip(dx+x, 0, tmpl.shape[1]-1)
